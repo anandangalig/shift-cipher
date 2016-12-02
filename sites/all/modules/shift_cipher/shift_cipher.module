@@ -55,11 +55,18 @@
 
   //======================ELEMENT VALIDATIONS=====================================
   function element_validate_direction($element) {
-    if();
+    $user_input_direction = strtolower($element['#value']);
+    $acceptable_directions = array('left', 'right');
+    if(!in_array($user_input_direction, $acceptable_directions)) {
+      form_error($element, t('The direction needs to be either Left or Right.'));
     }
   }
 
   function element_validate_phrase($element) {
-    if();
+    $phrase_exploded = explode(" ", $element['#value']);
+    foreach ($phrase_exploded as $word) {
+      if(!ctype_alpha($word)) {
+        form_error($element, t('The phrase needs to consist of all letters.'));
+      }
     }
   }
