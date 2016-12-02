@@ -48,9 +48,31 @@
   }
 
   function form_input_submit($form, &$form_state) {
-    $value = $form_state['values']['shift_value'];
+    $alphabet = array('a', 'b', 'c', 'd',	'e', 'f',	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',	'u', 'v', 'w', 'x', 'y', 'z');
+    $value = intval($form_state['values']['shift_value']); //string turns to number
     $direction = $form_state['values']['shift_direction'];
-    $phrase = $form_state['values']['phrase'];
+    $phrase = str_split(strtolower($form_state['values']['phrase']));
+
+
+    for($p_index = 0; $p_index < count($phrase); $p_index++) {
+      for($a_index = 0; $a_index < count($alphabet); $a_index++) {
+        if($phrase[$p_index] == $alphabet[$a_index]) {
+          // echo '<pre>';
+          // var_dump($phrase[$p_index]);
+          // echo '</pre>';
+          $phrase[$p_index] = $alphabet[$a_index - $value];
+          // echo '<pre>';
+          // var_dump($phrase[$p_index]);
+          // echo '</pre>';
+          // exit;
+        }
+      }
+    }
+    echo '<pre>';
+    var_dump(implode($phrase));
+    echo '</pre>';
+    exit;
+
   }
 
   //======================ELEMENT VALIDATIONS=====================================
