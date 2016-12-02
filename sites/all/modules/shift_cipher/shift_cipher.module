@@ -56,24 +56,27 @@
 
     for($p_index = 0; $p_index < count($phrase); $p_index++) {
       for($a_index = 0; $a_index < count($alphabet); $a_index++) {
-        if($phrase[$p_index] == $alphabet[$a_index]) {
-          // echo '<pre>';
-          // var_dump($phrase[$p_index]);
-          // echo '</pre>';
+        if($phrase[$p_index] == $alphabet[$a_index] && $direction == 'left') {
           $phrase[$p_index] = $alphabet[$a_index - $value];
-          // echo '<pre>';
-          // var_dump($phrase[$p_index]);
-          // echo '</pre>';
-          // exit;
+        }elseif($phrase[$p_index] == $alphabet[$a_index] && $direction == 'right') {
+          $phrase[$p_index] = $alphabet[$a_index += $value]; // + alone does not work!
         }
       }
     }
-    echo '<pre>';
-    var_dump(implode($phrase));
-    echo '</pre>';
-    exit;
 
+    $_SESSION['shift_cipher_output'] = implode($phrase);
+    $form_state['redirect'] = 'shift_cipher_success_page';
   }
+
+  function result() {
+    $result = $_SESSION['shift_cipher_output'];
+    return $result;
+  }
+
+  // echo '<pre>';
+  // var_dump($result);
+  // echo '</pre>';
+  // exit;
 
   //======================ELEMENT VALIDATIONS=====================================
   function element_validate_direction($element) {
@@ -87,8 +90,8 @@
   function element_validate_phrase($element) {
     $phrase_exploded = explode(" ", $element['#value']);
     foreach ($phrase_exploded as $word) {
-      if(!ctype_alpha($word)) {
-        form_error($element, t('The phrase needs to consist of all letters.'));
+      if(!ctype_alpha($word)) { // look into ctype_punct for punctuations
+        form_error($element, t('The phrase needs to consist of letters and punctuations.'));
       }
     }
   }
