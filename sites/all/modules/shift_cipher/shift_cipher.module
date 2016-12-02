@@ -1,0 +1,65 @@
+<?php
+  function shift_cipher_menu() {
+    $items['shift_cipher'] = array(
+      'title' => 'Shift Cipher',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('form_input'),
+      'access callback' => TRUE,
+      'type' => MENU_NORMAL_ITEM,
+    );
+    $items['shift_cipher_success_page'] = array(
+      'title' => 'Encryption Result',
+      'page callback' => 'result',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+  }
+
+
+//======================FORM INPUT =============================================
+  function form_input() {
+    $form['shift_value'] = array(
+      '#title' => "Shift Value",
+      '#type' => 'textfield',
+      '#description' => t('Please enter the <strong>shift value</strong> for the encryption'),
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#required' => TRUE,
+    );
+    $form['shift_direction'] = array(
+      '#title' => "Shift Direction",
+      '#type' => 'textfield',
+      '#description' => t('Please enter the <strong>direction(left/right)</strong> of the desired shift'),
+      '#element_validate' => array('element_validate_direction'),
+      '#required' => TRUE,
+    );
+    $form['phrase'] = array(
+      '#title' => "Phrase to be encrypted",
+      '#type' => 'textfield',
+      '#description' => t('Please enter the phraze you want to encrypt'),
+      '#element_validate' => array('element_validate_phrase'),
+      '#required' => TRUE,
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Encrypt',
+    );
+    return $form;
+  }
+
+  function form_input_submit($form, &$form_state) {
+    $value = $form_state['values']['shift_value'];
+    $direction = $form_state['values']['shift_direction'];
+    $phrase = $form_state['values']['phrase'];
+  }
+
+  //======================ELEMENT VALIDATIONS=====================================
+  function element_validate_direction($element) {
+    if();
+    }
+  }
+
+  function element_validate_phrase($element) {
+    if();
+    }
+  }

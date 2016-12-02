@@ -1,0 +1,6 @@
+name = Shift Cipher
+description = Caesar's cipher encryption technique.
+package = Custom Modules
+core = 7.x
+files[] = shift_cipher.module
+stylesheets[all][] = styles.css
