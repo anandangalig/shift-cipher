@@ -23,7 +23,7 @@
       '#title' => "Shift Value",
       '#type' => 'textfield',
       '#description' => t('Please enter the <strong>shift value</strong> for the encryption'),
-      '#element_validate' => array('element_validate_integer_positive'),
+      '#element_validate' => array('element_validate_integer_positive', 'element_validate_twentysix'),
       '#required' => TRUE,
     );
     $form['shift_direction'] = array(
@@ -49,17 +49,38 @@
 
   function form_input_submit($form, &$form_state) {
     $alphabet = array('a', 'b', 'c', 'd',	'e', 'f',	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',	'u', 'v', 'w', 'x', 'y', 'z');
-    $value = intval($form_state['values']['shift_value']); //string turns to number
     $direction = $form_state['values']['shift_direction'];
     $phrase = str_split(strtolower($form_state['values']['phrase']));
+    $value = intval($form_state['values']['shift_value']); //string turns to number
+    if($value > 26) {
+      $value = $value % 26;
+    }
 
+
+ // when going over the limit, I do not fully understand the conversion + calculation between index and integers.
 
     for($p_index = 0; $p_index < count($phrase); $p_index++) {
       for($a_index = 0; $a_index < count($alphabet); $a_index++) {
         if($phrase[$p_index] == $alphabet[$a_index] && $direction == 'left') {
-          $phrase[$p_index] = $alphabet[$a_index - $value];
+          if((($a_index + 1) - $value) <= 0) {
+            $spots_to_count_from_end = count($alphabet) + ($a_index - $value);
+            $phrase[$p_index] = $alphabet[$spots_to_count_from_end];
+            break;
+          }
+          elseif((($a_index + 1) - $value) > 0) {
+            $phrase[$p_index] = $alphabet[$a_index - $value];
+            break;
+          }
         }elseif($phrase[$p_index] == $alphabet[$a_index] && $direction == 'right') {
-          $phrase[$p_index] = $alphabet[$a_index += $value]; // + alone does not work!
+          if((($a_index + 1) + $value) > 26) {
+            $spots_to_count_from_other_end = ($a_index + $value) - count($alphabet);
+            $phrase[$p_index] = $alphabet[$spots_to_count_from_other_end];
+            break;
+          }
+          elseif((($a_index + 1) + $value) <= 26) {
+            $phrase[$p_index] = $alphabet[$a_index + $value];
+            break;
+          }
         }
       }
     }
@@ -84,6 +105,13 @@
     $acceptable_directions = array('left', 'right');
     if(!in_array($user_input_direction, $acceptable_directions)) {
       form_error($element, t('The direction needs to be either Left or Right.'));
+    }
+  }
+
+  function element_validate_twentysix($element) {
+    $user_input_value = $element['#value'];
+    if($user_input_value == 26) {
+      form_error($element, t('Shifting 26 spots gives you the same letter back. Try harder!'));
     }
   }
 
